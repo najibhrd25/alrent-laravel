@@ -14,10 +14,10 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        // Middleware global (jalan di semua request)
-        \App\Http\Middleware\TrustProxies::class,
-        \App\Http\Middleware\ForceHttps::class, // tambahkan ini
+    // Middleware global (jalan di semua request)
         \Illuminate\Http\Middleware\HandleCors::class,
+        \App\Http\Middleware\TrustProxies::class, // <- Pindahkan ke sini, sebelum ForceHttps
+        \App\Http\Middleware\ForceHttps::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
