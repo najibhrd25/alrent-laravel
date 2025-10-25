@@ -46,4 +46,8 @@ Route::middleware('auth')->group(function () {
     return '✅ Migrasi berhasil dijalankan di server!'; 
     });
 
+    Route::get('/ping', function () {
+    return 'pong';
+    });
+
 });
