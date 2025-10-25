@@ -41,5 +41,9 @@ Route::middleware('auth')->group(function () {
     return view('checkout-success');
     })->middleware('auth')->name('checkout.success');
 
+    Route::get('/run-migrate', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return '✅ Migrasi berhasil dijalankan di server!'; 
+    });
 
 });
