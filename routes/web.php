@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +28,19 @@ Route::get('/ht', function () {
 // 🔐 Autentikasi (Register, Login, Logout)
 Auth::routes();
 
-// 🧭 Dashboard default Laravel setelah login
-//Route::get('/home', [HomeController::class, 'index'])->name('home');
+// ⚙️ ROUTE DEBUG — pindahkan ke luar agar tidak butuh login
+Route::get('/ping', function () {
+    return 'pong';
+});
+
+Route::get('/run-migrate', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return '✅ Migrasi berhasil dijalankan di server!<br>' . Artisan::output();
+    } catch (Exception $e) {
+        return '❌ Error: ' . $e->getMessage();
+    }
+});
 
 // 🛒 ROUTE KERANJANG (CRUD) — hanya bisa diakses jika sudah login
 Route::middleware('auth')->group(function () {
@@ -38,16 +50,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     Route::get('/checkout-success', function () {
-    return view('checkout-success');
+        return view('checkout-success');
     })->middleware('auth')->name('checkout.success');
-
-    Route::get('/run-migrate', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    return '✅ Migrasi berhasil dijalankan di server!'; 
-    });
-
-    Route::get('/ping', function () {
-    return 'pong';
-    });
-
 });
