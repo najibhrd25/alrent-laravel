@@ -16,6 +16,7 @@ class Kernel extends HttpKernel
     protected $middleware = [
         // Middleware global (jalan di semua request)
         \App\Http\Middleware\TrustProxies::class,
+        \App\Http\Middleware\ForceHttps::class, // tambahkan ini
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
