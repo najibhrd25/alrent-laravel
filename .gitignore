@@ -1,8 +1,8 @@
+# ---- Laravel defaults ----
 *.log
 .DS_Store
 .env
-.env.backup
-.env.production
+.env.*
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -22,3 +22,23 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# ---- Tambahan penting ----
+# Composer & vendor cache
+/composer.phar
+/vendor/*
+!vendor/.gitkeep
+
+# Laravel Mix / Vite build output
+/public/dist
+/build
+
+# Local backup atau dump
+*.sql
+*.sqlite
+*.bak
+*.backup
+
+# System files
+/.env.backup
+/.env.production
