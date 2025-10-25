@@ -1,31 +1,26 @@
-# Gunakan PHP dengan Apache bawaan
 FROM php:8.3-apache
 
-# Install dependency sistem dan ekstensi PHP yang dibutuhkan
-RUN apt-get update && apt-get install -y \
+# Gunakan mirror cepat dan non-interaktif agar tidak hang
+RUN sed -i 's|deb.debian.org|deb.debian.org/debian|g' /etc/apt/sources.list \
+    && apt-get clean \
+    && apt-get update -o Acquire::Retries=3 -o Acquire::http::No-Cache=True -o Acquire::http::Pipeline-Depth=0 \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev zip unzip git curl \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Aktifkan Apache mod_rewrite untuk Laravel
 RUN a2enmod rewrite
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy semua file project ke dalam container
 COPY . .
 
-# Install Composer dari image resmi composer
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
-# Install dependency Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permission agar Laravel bisa nulis ke storage dan cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port 80
 EXPOSE 80
 
-# Jalankan Apache
 CMD ["apache2-foreground"]
